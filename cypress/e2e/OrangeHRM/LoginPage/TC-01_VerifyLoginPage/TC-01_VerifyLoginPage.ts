@@ -1,8 +1,8 @@
 import { When, Then, Given } from "@badeball/cypress-cucumber-preprocessor";
 import LoginPageAction from "../../../../PageObjects/OrangeHRM/loginPage/actions";
 import LoginPageAssertions from "../../../../PageObjects/OrangeHRM/loginPage/assertions";
-import { USER_NAME } from "@support/constant";
-import { PASSWORD } from "@support/constant";
+import { USER_NAME } from "@support/shared/constant";
+import { PASSWORD } from "@support/shared/constant";
 
 const loginPageAction = new LoginPageAction();
 const loginPageAsserts = new LoginPageAssertions();

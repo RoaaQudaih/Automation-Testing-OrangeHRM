@@ -1,6 +1,6 @@
-class leaveActions{
-  openLeavePage(){
-    cy.contains('a','Leave').click();
-  } 
+class LeaveActions {
+  openLeavePage() {
+    cy.visit("/leave/viewLeaveList");
+  }
 }
-export default leaveActions
+export default LeaveActions;

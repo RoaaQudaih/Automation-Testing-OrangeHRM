@@ -1,11 +1,11 @@
-import { Entitlements } from "./createDataType";
-import { Leave } from "./createDataType";
+import { Entitlements } from "../../../support/leavePage/createDataType";
+import { Leave } from "../../../support/leavePage/createDataType";
 let id: number;
 class LeavePageDataUtils {
   addNewEntitlements = (entitlement: Entitlements) => {
     cy.request({
       method: "POST",
-      url: "https://opensource-demo.orangehrmlive.com/web/index.php/api/v2/leave/leave-entitlements",
+      url: "/api/v2/leave/leave-entitlements",
       body: entitlement,
     });
   };
@@ -13,7 +13,7 @@ class LeavePageDataUtils {
   addNewLeave = (Leave: Leave) => {
     cy.request({
       method: "POST",
-      url: "https://opensource-demo.orangehrmlive.com/web/index.php/api/v2/leave/leave-requests",
+      url: "/api/v2/leave/leave-requests",
       body: Leave,
     }).then((Response) => {
       id = Response.body.data.id;
@@ -23,7 +23,7 @@ class LeavePageDataUtils {
   approveLeave = () => {
     cy.request({
       method: "PUT",
-      url: `https://opensource-demo.orangehrmlive.com/web/index.php/api/v2/leave/employees/leave-requests/${id}`,
+      url: `/api/v2/leave/employees/leave-requests/${id}`,
       body: {
         action: "APPROVE",
       },

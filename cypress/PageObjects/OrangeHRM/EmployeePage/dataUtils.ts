@@ -1,51 +1,50 @@
-import { Employeebody } from "./createDataType";
-import { EmployeeLoginDetail } from "./createDataType";
+import { Employeebody } from "../../../support/employeePage/createDataType";
+import {createNewEmployeeLoginPage, createNewEmployeeBody } from "@support/employeePage/constants";
+import { EmployeeLoginDetail } from "../../../support/employeePage/createDataType";
+
 class EmplyeePageDataUtils {
   createNewEmployee = (Employee: Employeebody) => {
     return cy
       .request({
         method: "POST",
-        url: "https://opensource-demo.orangehrmlive.com/web/index.php/api/v2/pim/employees",
-        body: Employee,
+        url: "/api/v2/pim/employees",
+        body: createNewEmployeeBody(Employee)
       })
-      .then((Response) => {
-        return Response.body;
+      .then((response) => {
+        return response.body.data.empNumber;
       });
   };
 
   createLoginDetails = (LoginDetail: EmployeeLoginDetail) => {
     cy.request({
       method: "POST",
-      url: "https://opensource-demo.orangehrmlive.com/web/index.php/api/v2/admin/users",
-      body: LoginDetail,
+      url: "/api/v2/admin/users",
+      body: createNewEmployeeLoginPage(LoginDetail),
     });
   };
 
-  getEmployeeIdByName = (name: string) => {
+  getEmployeeById = (id: string) => {
     return cy
       .request(
         "GET",
-        `https://opensource-demo.orangehrmlive.com/web/index.php/api/v2/pim/employees?limit=50&offset=0&model=detailed&nameOrId=${name}&includeEmployees=onlyCurrent&sortField=employee.firstName&sortOrder=ASC`
+        `/api/v2/pim/employees?employeeId=${id}`
       )
       .then((Response) => {
-        if (Response.status === 200 && Response.body.data.length > 0) {
-          const id = Response.body.data[0].empNumber;
-          return id;
-        } else {
-          throw new Error(`User not found with name: ${name}`);
-        }
+        return Response.body.data[0].empNumber;
       });
   };
-  deleteEmployee = (name: string) => {
-    this.getEmployeeIdByName(name).then((id) => {
-      cy.request({
-        method: "DELETE",
-        url: "https://opensource-demo.orangehrmlive.com/web/index.php/api/v2/pim/employees",
-        body: {
-          ids: [id],
-        },
-      });
-    });
-  };
+
+  deleteEmployee = (id: string) => {
+    this.getEmployeeById(id).then((response)=>{
+        response && cy.request({
+          method: "DELETE",
+          url: "/api/v2/pim/employees",
+          body: {
+          ids: [response],
+          },
+        });     
+    })
+  }
+    
 }
 export default EmplyeePageDataUtils;

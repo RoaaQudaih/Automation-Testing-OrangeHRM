@@ -1,110 +1,125 @@
 import { When, Given, Then } from "@badeball/cypress-cucumber-preprocessor";
-import searchOnAdminUserAssertions from "../../../../PageObjects/OrangeHRM/searchOnAdminUser/assertions";
-import searchOnAdminUserActions from "../../../../PageObjects/OrangeHRM/searchOnAdminUser/actions";
-import addUserAction from "../../../../PageObjects/OrangeHRM/addUser/actions";
+import searchOnAdminUserAssertions from "../../../../PageObjects/OrangeHRM/AdminPage/searchOnAdminUser/assertions";
+import SearchGridActions from "../../../../PageObjects/OrangeHRM/AdminPage/searchOnAdminUser/actions";
+import AddUserAction from "../../../../PageObjects/OrangeHRM/AdminPage/addUser/actions";
+import { USER_NAME } from "@support/shared/constant";
+import { PASSWORD } from "@support/shared/constant";
 
-const addUserActions = new addUserAction();
-const searchActions = new searchOnAdminUserActions();
+const addUserActions = new AddUserAction();
+const searchActions = new SearchGridActions();
 const searchAsserts = new searchOnAdminUserAssertions();
 
+
 Given("The user on the login page", () => {
-  cy.login("Admin", "admin123");
+  cy.login(USER_NAME, PASSWORD);
 });
+
 When("The user navigate to the admin page", () => {
-  addUserActions.navigateToAdminPage();
+  addUserActions.openAdminPage();
 });
+
 Then("The search grid should be appear", () => {
-  searchAsserts.checkSearchGridIsExist();
+  searchAsserts.checkSearchGridIsExist(true);
 });
 
 Given("The user is on the search grid", () => {
-  cy.login("Admin", "admin123");
-  addUserActions.navigateToAdminPage();
+  cy.login(USER_NAME, PASSWORD);
+  addUserActions.openAdminPage();
 });
+
 When("The user enters a valid user name", () => {
-  searchActions.typeUserNameField("Admin");
+  searchActions.typeInUserNameField("Admin");
 });
+
 When("Clicks the search button", () => {
   searchActions.clickSearchButton();
 });
+
 Then("The system should given the required record", () => {
-  searchAsserts.checkSearchProcessIsSuccessfully("Admin");
+  searchAsserts.checkSearchProcessIsSuccessfully("Admin", true);
 });
 
 When("The user enters an invalid user name", () => {
-  searchActions.typeUserNameField("Roaa");
+  searchActions.typeInUserNameField("Roaa");
 });
+
 Then("The system should give no record found", () => {
-  searchAsserts.checkNoRecordVisibility();
+  searchAsserts.checkNoRecordIsVisible(true);
 });
 
 When("Clicks the reset button", () => {
   searchActions.clickResetButton();
 });
+
 Then(
   "The system should remove the search results and reset user name field",
   () => {
-    searchAsserts.checkUserNameIsReset();
+    searchAsserts.checkUserNameIsReset(false);
   }
 );
 
 When("The user enters a valid employee name", () => {
-  searchActions.enterEmployeeName("od", "Odis Adalwin");
+  searchActions.typeInEmployeeNameField("LPNZHdaaER zfFpDKrldH");
 });
+
 Then(
   "The system should give the required record with the employee name",
   () => {
-    searchAsserts.checkSearchProcessIsSuccessfully("Odis Adalwin");
+    searchAsserts.checkSearchProcessIsSuccessfully("LPNZHdaaER zfFpDKrldH", true);
   }
 );
 
 When("The user enters an valid employee name with no recored", () => {
-  searchActions.enterEmployeeName("ya", "yaswanth l l");
+  searchActions.typeInEmployeeNameField("Eloise Patience Erdman");
 });
 
 Then(
   "The system should remove the search results and reset employee name field",
   () => {
-    searchAsserts.checkEmployeeNameIsReset();
+    searchAsserts.checkEmployeeNameIsReset(false);
   }
 );
 
 When("The user clicks on the user role drop-down field", () => {
   searchActions.clickUserRoleField();
 });
+
 Then(
   "The drop-down field is clickable and should display correct options Admin & ESS",
   () => {
-    searchAsserts.checkUserRoleDropDownIsExist();
+    searchAsserts.checkDropdownIsExist(true);
   }
 );
 
 When("Select Admin option from the drop-down list", () => {
   searchActions.selectUserRole("Admin");
 });
+
 Then(
   "The selected option should be displayed on the user role drop-down field",
   () => {
-    searchAsserts.selectedUserRoleIsVisible("Admin");
+    searchAsserts.selectOptionIsVisible("User Role","Admin", true);
   }
 );
 
 Then("The system should given the required record with admin user role", () => {
-  searchAsserts.checkSearchProcessIsSuccessfully("Admin");
+  searchAsserts.checkSearchProcessIsSuccessfully("Admin", true);
 });
 
 When("The user selects Enabled option from the status drop-down", () => {
-  searchActions.selectStatus("Enabled");
+  searchActions.selectStatus("Enable");
 });
+
 Then("The system should given the required record with Enabled status", () => {
-  searchAsserts.selectedStatusIsVisible("Enable");
+  searchAsserts.selectOptionIsVisible("Status","Enable", true);
 });
 
 Then("The system should given the required record with these fields", () => {
   searchAsserts.checkCorrectResultWhenEnterAllFields(
     "Admin",
-    "Eve Hill Collings",
+    "LPNZHdaaER zfFpDKrldH",
     "Admin",
-    "Enable"
+    "Enable",
+    true
   );
 });
